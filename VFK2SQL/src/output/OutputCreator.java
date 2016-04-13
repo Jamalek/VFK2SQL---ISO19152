@@ -192,7 +192,6 @@ public class OutputCreator {
 				});
 		for (PAR parcela : par) {
 			parcela.sortBoundaryParts();
-			parcela.putBorderlineFirst();
 			for (int i = 0; i < parcela.boundaryParts.size(); i++) {
 				ladmTable.addRow(new String[] {
 						String.valueOf(parcela.boundaryParts.get(i).id),
