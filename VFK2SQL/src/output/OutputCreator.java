@@ -1,6 +1,7 @@
 package output;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -36,6 +37,11 @@ public class OutputCreator {
 			e.printStackTrace();
 		}
 	}
+	
+	private SOBR[] sobr;
+	private SBP[] sbp;
+	private HP[] hp;
+	private PAR[] par;
 
 	private void la_point() throws ColumnNotFoundException, TableNotFoundException {
 		LADMTable ladmTable = lto.createTable("LA_Point", new String[] {
@@ -70,11 +76,13 @@ public class OutputCreator {
 		int sequence = vto.getColumnByName("PORADOVE_CISLO_BODU N38", vfkTable);
 		int pID = vto.getColumnByName("BP_ID N30", vfkTable);
 		for (String[] row : vfkTable.getRows()) {
-			ladmTable.addRow(new String[] {
-					row[boundaryID],
-					row[sequence],
-					row[pID]
-			});
+			if (!row[boundaryID].equalsIgnoreCase("")) {
+				ladmTable.addRow(new String[] {
+						row[boundaryID],
+						row[sequence],
+						row[pID]
+				});
+			}
 		}
 	}
 
@@ -106,10 +114,10 @@ public class OutputCreator {
 		long[] sobr_id = vto.getColumnAsLongField("ID N30", t_sobr);
 		String[] sobr_x = vto.getColumnAsStringField("SOURADNICE_Y N10.2", t_sobr);
 		String[] sobr_y = vto.getColumnAsStringField("SOURADNICE_X N10.2", t_sobr);
-		SOBR[] sobr = new SOBR[sobr_id.length];
-		SBP[] sbp = new SBP[sbp_porad.length];
-		HP[] hp = new HP[hp_id.length*2];
-		PAR[] par = new PAR[par_id.length];
+		sobr = new SOBR[sobr_id.length];
+		sbp = new SBP[sbp_porad.length];
+		hp = new HP[hp_id.length*2];
+		par = new PAR[par_id.length];
 		for (int i = 0; i < sobr_id.length; i++) {
 			sobr[i] = new SOBR(sobr_id[i], sobr_x[i], sobr_y[i]);
 		}
@@ -192,27 +200,30 @@ public class OutputCreator {
 				});
 		for (PAR parcela : par) {
 			parcela.sortBoundaryParts();
-			for (int i = 0; i < parcela.boundaryParts.size(); i++) {
-				ladmTable.addRow(new String[] {
-						String.valueOf(parcela.boundaryParts.get(i).id),
-						String.valueOf(parcela.id),
-						String.valueOf(i),
-						String.valueOf(parcela.boundaryParts.get(i).direction)
-				});
+			int i = 1;
+			for (ArrayList<HP> hpList : parcela.boundaryPartsSorted) {
+				for (HP hp2 : hpList) {
+					ladmTable.addRow(new String[] {
+							String.valueOf(hp2.id),
+							String.valueOf(parcela.id),
+							String.valueOf(i),
+							String.valueOf(hp2.direction)
+					});
+					i++;
+				}
 			}
 		}
-		//TODO INSERT
 	}
 
 	private void la_SpatialUnit() throws ColumnNotFoundException, TableNotFoundException {
 		LADMTable ladmTable = lto.createTable("LA_SpatialUnit", new String[] {
-				"suID", "NUMBER NOT NULL"
+				"suID", "NUMBER NOT NULL",
+				"bpsi", "VARRAY",
 				});
-		VFKTable vfkTable = vto.getTable("PAR");
-		int suID = vto.getColumnByName("ID N30", vfkTable);
-		for (String[] row : vfkTable.getRows()) {
+		for (PAR par2 : par) {
 			ladmTable.addRow(new String[] {
-					row[suID]
+					String.valueOf(par2.id),
+					par2.boundaryPartsBeginIndex.toString()
 			});
 		}
 	}

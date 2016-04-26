@@ -201,7 +201,7 @@ public class PAR implements Comparable<PAR> {
 		boundaryPartsBeginIndex.add(1);
 		for (int i = 0; i < boundaryPartsSorted.size()-1; i++) {
 			boundaryPartsBeginIndex.add(
-					boundaryPartsBeginIndex.size()+
+					boundaryPartsBeginIndex.get(boundaryPartsBeginIndex.size()-1)+
 					boundaryPartsSorted.get(i).size());
 		}
 	}
