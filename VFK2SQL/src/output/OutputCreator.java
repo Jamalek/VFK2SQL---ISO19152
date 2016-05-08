@@ -225,7 +225,7 @@ public class OutputCreator {
 			String bpbiString = par2.boundaryPartsBeginIndex.toString();
 			ladmTable.addRow(new String[] {
 					String.valueOf(par2.id),
-					bpbiString.substring(1, bpbiString.length()-1)
+					"'"+bpbiString.substring(1, bpbiString.length()-1)+"'"
 			});
 		}
 	}
