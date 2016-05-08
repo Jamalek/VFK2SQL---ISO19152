@@ -10,7 +10,12 @@ public class Api {
 		if (args.length == 2) {
 			String inputPath = args[0];
 			String outputPath = args[1];
+			inputPath.replaceAll("\"", "");
+			
 			new input.InputProcessor(inputPath, outputPath);
-		} else output.Console.printLn("Spatny format vstupu");
+		} else {
+			output.Console.printLn("Spatny format vstupu");
+			Help.sendHelp();
+		}
 	}
 }
