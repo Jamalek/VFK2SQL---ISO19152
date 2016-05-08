@@ -46,7 +46,8 @@ public class OutputCreator {
 	private void la_point() throws ColumnNotFoundException, TableNotFoundException {
 		LADMTable ladmTable = lto.createTable("LA_Point", new String[] {
 				"pID", "NUMBER NOT NULL",
-				"point", "SDO_GEOMETRY NOT NULL"
+				"point", "SDO_GEOMETRY NOT NULL",
+				"PRIMARY KEY", "(pID)"
 				});
 		VFKTable vfkTable = vto.getTable("SOBR");
 		int pID = vto.getColumnByName("ID N30", vfkTable);
@@ -57,10 +58,10 @@ public class OutputCreator {
 					row[pID],
 					"SDO_GEOMETRY("
 					+ "2001,"
-					+ "5514,"
-					+ "SDO_POINT_TYPE("+row[x]+", "+row[y]+", NULL),"
+					+ "4156,"
+					+ "SDO_POINT_TYPE(-"+row[y]+", -"+row[x]+", NULL),"
 					+ "NULL,"
-					+ "NULL))"
+					+ "NULL)"
 			});
 		}
 	}
@@ -207,7 +208,7 @@ public class OutputCreator {
 							String.valueOf(hp2.id),
 							String.valueOf(parcela.id),
 							String.valueOf(i),
-							String.valueOf(hp2.direction)
+							"'"+String.valueOf(hp2.direction)+"'"
 					});
 					i++;
 				}
@@ -218,12 +219,13 @@ public class OutputCreator {
 	private void la_SpatialUnit() throws ColumnNotFoundException, TableNotFoundException {
 		LADMTable ladmTable = lto.createTable("LA_SpatialUnit", new String[] {
 				"suID", "NUMBER NOT NULL",
-				"bpsi", "VARRAY",
+				"bpsi", "VARCHAR2(100) NOT NULL",
 				});
 		for (PAR par2 : par) {
+			String bpbiString = par2.boundaryPartsBeginIndex.toString();
 			ladmTable.addRow(new String[] {
 					String.valueOf(par2.id),
-					par2.boundaryPartsBeginIndex.toString()
+					bpbiString.substring(1, bpbiString.length()-1)
 			});
 		}
 	}
