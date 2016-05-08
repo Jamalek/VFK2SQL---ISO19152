@@ -6,10 +6,6 @@ import input.InputProcessor;
 import output.Console;
 
 public class PAR implements Comparable<PAR> {
-	public static void main(String[] args) {
-		new InputProcessor("VstupTest.vfk", "VystupTest.txt");
-	}
-
 	public final ArrayList<HP> boundaryParts = new ArrayList<HP>();
 	public ArrayList<ArrayList<HP>> boundaryPartsSorted = new ArrayList<ArrayList<HP>>();
 	public final long id;
