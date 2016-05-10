@@ -46,7 +46,7 @@ public class PAR implements Comparable<PAR> {
 			angle += angle(x.get(j-1), y.get(j-1), x.get(j), y.get(j), x.get(j+1), y.get(j+1));
 		}
 		angle += angle(x.get(x.size()-2), y.get(y.size()-2), x.get(x.size()-1), y.get(y.size()-1), x.get(0), y.get(0));
-		return (angle/n > 0) ? true : false;
+		return (angle/n > 0) ? false : true;
 	}
 	
 	private double angle(Double x1, Double y1, Double x2, Double y2, Double x3, Double y3) {
@@ -112,13 +112,24 @@ public class PAR implements Comparable<PAR> {
 			}
 		}
 		for (ArrayList<HP> hpList : bps) {
-			hpList = orientCounterClockWise(hpList);
+			orientCounterClockWise(hpList);
 		}
 		outerBoundaryFirst();
+		if (id == Long.parseLong("2851165306")) {
+			for (ArrayList<HP> hpList : bps) {
+				for (HP hp : hpList) {
+					System.out.println(hp.sobrList.get(1).id);
+				}
+			}
+		}
+		for (int i = 1; i < bps.size(); i++) {
+			ArrayList<HP> hpList = bps.get(i);
+			switchOrientation(hpList);
+		}
 		addIndexArray();
 	}
 	
-	private ArrayList<HP> orientCounterClockWise(ArrayList<HP> hpList) {
+	private void orientCounterClockWise(ArrayList<HP> hpList) {
 		for (int i = 0; i < hpList.size()-1; i++) {
 			HP hp = hpList.get(i);
 			HP hp1 = hpList.get(i+1);
@@ -131,10 +142,12 @@ public class PAR implements Comparable<PAR> {
 		hp.direction = (hp.sobrList.get(0) == hp1.sobrList.get(0) || 
 				hp.sobrList.get(0) == hp1.sobrList.get(hp1.sobrList.size()-1)) ?
 						'-' : '+';
-		return (isOrientedClockWise(hpList)) ? switchOrientation(hpList) : hpList;
+		if (isOrientedClockWise(hpList)) {
+			switchOrientation(hpList);
+		}
 	}
 
-	private ArrayList<HP> switchOrientation(ArrayList<HP> hpList) {
+	private void switchOrientation(ArrayList<HP> hpList) {
 		ArrayList<HP> hpListNew = new ArrayList<HP>();
 		for (int i = hpList.size()-1; i >= 0; i--) {
 			hpListNew.add(hpList.get(i));
@@ -142,7 +155,9 @@ public class PAR implements Comparable<PAR> {
 		for (HP hp : hpListNew) {
 			hp.direction = (hp.direction == '+') ? '-' : '+';
 		}
-		return hpListNew;
+		for (int i = 0; i < hpListNew.size(); i++) {
+			hpList.set(i, hpListNew.get(i));
+		}
 	}
 	
 	private void outerBoundaryFirst() {
